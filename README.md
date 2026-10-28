@@ -1,9 +1,8 @@
-# G12_Arvores_EDA2-2026.2
-# Sistema de Triagem e Gestão de Emergência Hospitalar (Protocolo de Manchester)
+# Sistema de Triagem e Gestão de Emergência Hospitalar
 
 Trabalho prático 2 para a disciplina de Estruturas de Dados 2.
 
-## 📹 Apresentação
+## Apresentação
 * **Assista ao Vídeo:** [Apresentação da dupla](link_do_video_aqui) *(a ser gravado)*
 
 ## Equipe
@@ -33,7 +32,7 @@ O sistema adota arquitetura desacoplada:
 
 ---
 
-## 🚀 Como Executar o Projeto *(Em desenvolvimento)*
+## Como Executar o Projeto
 
 > [!NOTE]
 > As instruções detalhadas de compilação do backend e execução da interface gráfica serão atualizadas conforme a conclusão dos módulos nas próximas issues.
@@ -45,8 +44,8 @@ O sistema adota arquitetura desacoplada:
 ---
 
 ## Check-list de Desenvolvimento
-- [ ] Configuração do repositório, diretórios e documentação base.
-- [ ] Geração e higienização da base de dados (100.000 pacientes clínicos em CSV).
+- [X] Configuração do repositório, diretórios e documentação base.
+- [ ] Geração e higienização da base de dados.
 - [ ] `backend`: Definição da `struct Paciente` e leitor de CSV com pool de memória.
 - [ ] `backend`: Implementação da Fila de Prioridades (Max-Heap).
 - [ ] `backend`: Implementação da Árvore Binária Balanceada (AVL).
