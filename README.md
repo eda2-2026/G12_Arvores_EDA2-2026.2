@@ -45,7 +45,7 @@ O sistema adota arquitetura desacoplada:
 
 ## Check-list de Desenvolvimento
 - [X] Configuração do repositório, diretórios e documentação base.
-- [ ] Geração e higienização da base de dados.
+- [X] Geração e higienização da base de dados.
 - [ ] `backend`: Definição da `struct Paciente` e leitor de CSV com pool de memória.
 - [ ] `backend`: Implementação da Fila de Prioridades (Max-Heap).
 - [ ] `backend`: Implementação da Árvore Binária Balanceada (AVL).
