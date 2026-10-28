@@ -63,6 +63,4 @@ env/
 venv/
 
 # Dados grandes
-*.csv
-dados/*.csv
-back/dados/*.csv
+INFLUD*.csv
