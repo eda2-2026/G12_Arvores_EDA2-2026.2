@@ -49,47 +49,44 @@ int carregar_pacientes_csv(const char *caminho_csv, Paciente **pool, int capacid
             fprintf(stderr, "Erro de memoria ao alocar paciente na linha %d.\n", total_lidos + 2);
             break;
         }
-
-        char *salva_ptr = NULL;
-
-        char *campo = strtok_r(linha, ";", &salva_ptr);
+        char *campo = strtok(linha, ";");
         if (!campo) { free(p); continue; }
         p->id_prontuario = atoi(campo);
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         strncpy(p->cpf, campo, TAM_CPF - 1);
         p->cpf[TAM_CPF - 1] = '\0';
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         strncpy(p->nome, campo, TAM_NOME - 1);
         p->nome[TAM_NOME - 1] = '\0';
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         p->idade = atoi(campo);
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         strncpy(p->sintomas, campo, TAM_SINTOMAS - 1);
         p->sintomas[TAM_SINTOMAS - 1] = '\0';
 
         //classificacao (Manchester)
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         strncpy(p->classificacao, campo, TAM_CLASSIFICACAO - 1);
         p->classificacao[TAM_CLASSIFICACAO - 1] = '\0';
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         p->prioridade = atoi(campo);
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         p->horario_chegada = atoll(campo);
 
-        campo = strtok_r(NULL, ";", &salva_ptr);
+        campo = strtok(NULL, ";");
         if (!campo) { free(p); continue; }
         strncpy(p->status, campo, TAM_STATUS - 1);
         p->status[TAM_STATUS - 1] = '\0';
