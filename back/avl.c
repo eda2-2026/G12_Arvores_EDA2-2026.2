@@ -60,3 +60,64 @@ NoAVL* avl_rotacao_dupla_esquerda(NoAVL *no) {
     no->dir = avl_rotacao_direita(no->dir);
     return avl_rotacao_esquerda(no);
 }
+
+static NoAVL* criar_no_avl(Paciente *paciente) {
+    NoAVL *novo = (NoAVL *)malloc(sizeof(NoAVL));
+    if (!novo) {
+        fprintf(stderr, "Erro ao alocar no da AVL.\n");
+        return NULL;
+    }
+    novo->paciente = paciente;
+    novo->altura = 1;
+    novo->esq = NULL;
+    novo->dir = NULL;
+    return novo;
+}
+
+// insere indexando pelo CPF e rebalanceia o caminho na volta
+NoAVL* avl_inserir(NoAVL *raiz, Paciente *paciente) {
+    if (!paciente) return raiz;
+
+    if (!raiz) {
+        return criar_no_avl(paciente);
+    }
+
+    int cmp = strcmp(paciente->cpf, raiz->paciente->cpf);
+    if (cmp < 0) {
+        raiz->esq = avl_inserir(raiz->esq, paciente);
+    } else if (cmp > 0) {
+        raiz->dir = avl_inserir(raiz->dir, paciente);
+    } else {
+        return raiz; // ignora CPF duplicado
+    }
+
+    raiz->altura = 1 + max(avl_altura(raiz->esq), avl_altura(raiz->dir));
+
+    int fb = avl_fator_balanceamento(raiz);
+
+    // desbalanceou para a esquerda
+    if (fb > 1) {
+        if (avl_fator_balanceamento(raiz->esq) >= 0) {
+            return avl_rotacao_direita(raiz);
+        }
+        return avl_rotacao_dupla_direita(raiz);
+    }
+
+    // desbalanceou para a direita
+    if (fb < -1) {
+        if (avl_fator_balanceamento(raiz->dir) <= 0) {
+            return avl_rotacao_esquerda(raiz);
+        }
+        return avl_rotacao_dupla_esquerda(raiz);
+    }
+
+    return raiz;
+}
+
+// libera apenas os nos da arvore (os pacientes pertencem ao pool)
+void avl_liberar(NoAVL *raiz) {
+    if (!raiz) return;
+    avl_liberar(raiz->esq);
+    avl_liberar(raiz->dir);
+    free(raiz);
+}

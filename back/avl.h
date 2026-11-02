@@ -18,4 +18,7 @@ NoAVL* avl_rotacao_esquerda(NoAVL *x);
 NoAVL* avl_rotacao_dupla_direita(NoAVL *no); 
 NoAVL* avl_rotacao_dupla_esquerda(NoAVL *no); 
 
+NoAVL* avl_inserir(NoAVL *raiz, Paciente *paciente);
+void avl_liberar(NoAVL *raiz);
+
 #endif
