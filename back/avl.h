@@ -21,4 +21,7 @@ NoAVL* avl_rotacao_dupla_esquerda(NoAVL *no);
 NoAVL* avl_inserir(NoAVL *raiz, Paciente *paciente);
 void avl_liberar(NoAVL *raiz);
 
+Paciente* avl_buscar_cpf(NoAVL *raiz, const char *cpf, int *comparacoes);
+void avl_percurso_em_ordem(NoAVL *raiz);
+
 #endif

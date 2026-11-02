@@ -121,3 +121,38 @@ void avl_liberar(NoAVL *raiz) {
     avl_liberar(raiz->dir);
     free(raiz);
 }
+
+// busca paciente pelo CPF contabilizando quantas comparacoes foram feitas
+Paciente* avl_buscar_cpf(NoAVL *raiz, const char *cpf, int *comparacoes) {
+    if (comparacoes) *comparacoes = 0;
+    if (!cpf) return NULL;
+
+    NoAVL *atual = raiz;
+    while (atual) {
+        if (comparacoes) (*comparacoes)++;
+
+        int cmp = strcmp(cpf, atual->paciente->cpf);
+        if (cmp == 0) {
+            return atual->paciente;
+        } else if (cmp < 0) {
+            atual = atual->esq;
+        } else {
+            atual = atual->dir;
+        }
+    }
+
+    return NULL;
+}
+
+// lista os pacientes em ordem crescente de CPF (esq -> raiz -> dir)
+void avl_percurso_em_ordem(NoAVL *raiz) {
+    if (!raiz) return;
+
+    avl_percurso_em_ordem(raiz->esq);
+    printf("CPF: %s | ID: %d | Nome: %s | Risco: %s\n",
+           raiz->paciente->cpf,
+           raiz->paciente->id_prontuario,
+           raiz->paciente->nome,
+           raiz->paciente->classificacao);
+    avl_percurso_em_ordem(raiz->dir);
+}
