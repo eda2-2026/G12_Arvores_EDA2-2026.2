@@ -112,11 +112,52 @@ static void testar_busca_cpf(void) {
     printf("  -> OK! Buscas existentes, de borda e inexistentes validadas.\n");
 }
 
+static void testar_carga_real_e_altura_maxima(void) {
+    printf("[Teste 3] Validando carga real do CSV, altura maxima e memoria...\n");
+
+    Paciente **pool = alocar_pool_pacientes(MAX_PACIENTES);
+    assert(pool != NULL);
+
+    int total = carregar_pacientes_csv("dados/pacientes.csv", pool, MAX_PACIENTES);
+    if (total <= 0) {
+        total = carregar_pacientes_csv("../dados/pacientes.csv", pool, MAX_PACIENTES);
+    }
+    assert(total > 0);
+
+    NoAVL *raiz = NULL;
+    for (int i = 0; i < total; i++) {
+        raiz = avl_inserir(raiz, pool[i]);
+    }
+
+    int h = avl_altura(raiz);
+    printf("  -> Pacientes inseridos: %d | Altura da AVL: %d\n", total, h);
+
+    //limite teorico da AVL para ate 100.000 nos: h <= 24
+    assert(h > 0 && h <= 24);
+    assert(verificar_propriedade_avl(raiz) == 1);
+
+    //busca nas extremidades e no meio garantindo que passos <= altura
+    int indices[3] = {0, total / 2, total - 1};
+    for (int i = 0; i < 3; i++) {
+        int comp = 0;
+        int idx = indices[i];
+        Paciente *achado = avl_buscar_cpf(raiz, pool[idx]->cpf, &comp);
+        assert(achado == pool[idx]);
+        assert(comp >= 1 && comp <= h);
+    }
+
+    avl_liberar(raiz);
+    liberar_pool_pacientes(pool, total);
+
+    printf("  -> OK! Altura controlada e memoria liberada com sucesso.\n");
+}
+
 int main(void) {
     printf("=== INICIANDO TESTES UNITARIOS DA ARVORE AVL ===\n\n");
 
     testar_rotacoes_e_balanceamento();
     testar_busca_cpf();
+    testar_carga_real_e_altura_maxima();
 
     printf("\n=== TODOS OS TESTES PASSARAM COM SUCESSO! ===\n");
     return 0;
