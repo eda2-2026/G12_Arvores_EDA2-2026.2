@@ -5,7 +5,7 @@
 #include <time.h>
 #include "../back/paciente.h"
 #include "../back/leitor.h"
-#include "../back/heap.h"
+#include "../back/heap/heap.h"
 
 static void test_ordem_manchester() {
     printf("[TESTE 1] Insercao e Ordem de Manchester... ");
