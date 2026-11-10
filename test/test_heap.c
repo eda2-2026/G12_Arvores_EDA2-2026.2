@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <time.h>
 #include "../back/paciente.h"
-#include "../back/leitor.h"
+#include "../back/leitor/leitor.h"
 #include "../back/heap/heap.h"
 
 static void test_ordem_manchester() {

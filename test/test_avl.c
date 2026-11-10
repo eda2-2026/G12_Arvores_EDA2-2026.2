@@ -3,8 +3,8 @@
 #include <string.h>
 #include <assert.h>
 #include "../back/paciente.h"
-#include "../back/avl.h"
-#include "../back/leitor.h"
+#include "../back/avl/avl.h"
+#include "../back/leitor/leitor.h"
 
 static Paciente criar_paciente_mock(int id, const char *cpf, const char *nome) {
     Paciente p;
