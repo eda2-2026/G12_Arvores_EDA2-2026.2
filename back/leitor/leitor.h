@@ -1,7 +1,7 @@
 #ifndef LEITOR_H
 #define LEITOR_H
 
-#include "paciente.h"
+#include "../paciente.h"
 
 Paciente** alocar_pool_pacientes(int capacidade);
 
