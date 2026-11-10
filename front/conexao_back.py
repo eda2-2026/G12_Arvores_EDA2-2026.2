@@ -1,6 +1,7 @@
 import os
 import subprocess
 import threading
+import time
 
 class ConexaoBackend:
     def __init__(self):
@@ -65,6 +66,93 @@ class ConexaoBackend:
 
             linha_resposta = self.processo.stdout.readline().strip()
             return linha_resposta
+
+    def _parsear_paciente(self, partes):
+        # Converte a lista de campos em dicionario estruturado
+        return {
+            "id_prontuario": int(partes[0]),
+            "cpf": partes[1],
+            "nome": partes[2],
+            "idade": int(partes[3]),
+            "sintomas": partes[4],
+            "classificacao": partes[5],
+            "prioridade": int(partes[6]),
+            "horario_chegada": int(partes[7]),
+            "status": partes[8]
+        }
+
+    def chamar_proximo(self):
+        resposta = self._enviar_comando("CHAMAR")
+        partes = resposta.split(";")
+        if partes[0] == "OK":
+            return {
+                "sucesso": True,
+                "paciente": self._parsear_paciente(partes[1:])
+            }
+        return {"sucesso": False, "mensagem": partes[1] if len(partes) > 1 else resposta}
+
+    def buscar_cpf(self, cpf):
+        cpf_limpo = str(cpf).strip().replace(".", "").replace("-", "")
+        resposta = self._enviar_comando(f"BUSCAR {cpf_limpo}")
+        partes = resposta.split(";")
+        if partes[0] == "OK":
+            comparacoes = int(partes[1])
+            paciente = self._parsear_paciente(partes[2:])
+            return {
+                "sucesso": True,
+                "comparacoes": comparacoes,
+                "paciente": paciente
+            }
+        return {"sucesso": False, "mensagem": partes[1] if len(partes) > 1 else resposta}
+
+    def reclassificar(self, id_prontuario, nova_prioridade, nova_classificacao):
+        comando = f"RECLASSIFICAR {id_prontuario} {nova_prioridade} {nova_classificacao}"
+        resposta = self._enviar_comando(comando)
+        partes = resposta.split(";")
+        if partes[0] == "OK":
+            return {"sucesso": True, "mensagem": partes[1]}
+        return {"sucesso": False, "mensagem": partes[1] if len(partes) > 1 else resposta}
+
+    def inserir_paciente(self, cpf, nome, idade, sintomas, classificacao, prioridade, horario_chegada=None):
+        cpf_limpo = str(cpf).strip().replace(".", "").replace("-", "")
+        if horario_chegada is None:
+            horario_chegada = int(time.time())
+
+        comando = f"INSERIR {cpf_limpo};{nome};{idade};{sintomas};{classificacao};{prioridade};{horario_chegada}"
+        resposta = self._enviar_comando(comando)
+        partes = resposta.split(";")
+        if partes[0] == "OK":
+            return {
+                "sucesso": True,
+                "id_prontuario": int(partes[1]),
+                "mensagem": partes[2]
+            }
+        return {"sucesso": False, "mensagem": partes[1] if len(partes) > 1 else resposta}
+
+    def obter_fila_topo(self, limite=10):
+        with self.lock:
+            if not self.processo or self.processo.poll() is not None:
+                raise RuntimeError("Processo do backend C nao esta em execucao.")
+
+            self.processo.stdin.write(f"FILA_TOPO {limite}\n")
+            self.processo.stdin.flush()
+
+            linha_inicio = self.processo.stdout.readline().strip()
+            partes_inicio = linha_inicio.split(";")
+            if partes_inicio[0] != "FILA_INICIO":
+                return []
+
+            qtd = int(partes_inicio[1])
+            fila = []
+            for _ in range(qtd):
+                linha = self.processo.stdout.readline().strip()
+                partes = linha.split(";")
+                if len(partes) >= 9:
+                    fila.append(self._parsear_paciente(partes))
+
+            linha_fim = self.processo.stdout.readline().strip()
+            assert linha_fim == "FILA_FIM", f"Esperado FILA_FIM, obtido: {linha_fim}"
+            return fila
 
     def obter_status(self):
         resposta = self._enviar_comando("STATUS")
