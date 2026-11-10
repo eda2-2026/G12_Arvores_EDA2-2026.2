@@ -1,7 +1,7 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "paciente.h"
+#include "../paciente.h"
 
 typedef struct {
     Paciente **dados;

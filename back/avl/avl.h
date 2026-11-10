@@ -1,7 +1,7 @@
 #ifndef AVL_H
 #define AVL_H
 
-#include "paciente.h"
+#include "../paciente.h"
 
 typedef struct NoAVL {
     Paciente *paciente;
