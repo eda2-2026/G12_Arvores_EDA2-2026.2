@@ -11,6 +11,8 @@ class AbaProntuario:
 
         self.paciente_consultado = None
         self.comparacoes_ultima_busca = 0
+        self.cor_selecionada = "Vermelho"
+        self.prioridade_selecionada = 5
 
         self._construir_layout()
 
@@ -20,14 +22,14 @@ class AbaProntuario:
         self.master.grid_rowconfigure(0, weight=0)
         self.master.grid_rowconfigure(1, weight=1)
 
-        #busca por CPF
+        # Barra de busca por CPF
         self.frame_busca = ctk.CTkFrame(self.master, corner_radius=10)
         self.frame_busca.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 5), sticky="ew")
         self.frame_busca.grid_columnconfigure(1, weight=1)
 
         lbl_busca = ctk.CTkLabel(
             self.frame_busca,
-            text="🔍 Consultar CPF (Árvore AVL):",
+            text="Consultar CPF (Árvore AVL):",
             font=ctk.CTkFont(size=15, weight="bold")
         )
         lbl_busca.grid(row=0, column=0, padx=(20, 10), pady=15, sticky="w")
@@ -73,7 +75,7 @@ class AbaProntuario:
 
         lbl_tit_ficha = ctk.CTkLabel(
             self.col_ficha,
-            text="📄 Ficha Médica do Paciente",
+            text="Ficha Médica do Paciente",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         lbl_tit_ficha.grid(row=0, column=0, padx=20, pady=(15, 5), sticky="w")
@@ -87,6 +89,8 @@ class AbaProntuario:
 
         self.col_reclass = ctk.CTkFrame(self.master, corner_radius=10)
         self.col_reclass.grid(row=1, column=1, padx=(5, 10), pady=(5, 10), sticky="nsew")
+        self.col_reclass.grid_columnconfigure(0, weight=1)
+        self._construir_painel_reclassificacao()
 
     def _aplicar_mascara_cpf(self, event=None):
         if event and event.keysym in ("BackSpace", "Delete", "Left", "Right", "Tab"):
@@ -115,9 +119,6 @@ class AbaProntuario:
 
         frame_vazio = ctk.CTkFrame(self.container_ficha, fg_color="transparent")
         frame_vazio.place(relx=0.5, rely=0.5, anchor="center")
-
-        lbl_icone = ctk.CTkLabel(frame_vazio, text="🗂️", font=ctk.CTkFont(size=52))
-        lbl_icone.pack(pady=(0, 10))
 
         lbl_msg = ctk.CTkLabel(
             frame_vazio,
@@ -149,7 +150,6 @@ class AbaProntuario:
         card.pack(fill="both", expand=True, padx=15, pady=15)
         card.grid_columnconfigure(0, weight=1)
 
-        #classificacao atual
         frame_badge = ctk.CTkFrame(card, fg_color=estilo["fundo"], corner_radius=6, height=36)
         frame_badge.pack(fill="x", padx=15, pady=(15, 10))
 
@@ -161,7 +161,6 @@ class AbaProntuario:
         )
         lbl_badge.pack(pady=6)
 
-        # Nome e identificacao
         lbl_nome = ctk.CTkLabel(
             card,
             text=paciente["nome"],
@@ -202,7 +201,6 @@ class AbaProntuario:
             text_color="#B0BEC5"
         ).grid(row=1, column=1, sticky="w", pady=3)
 
-        # Sintomas
         ctk.CTkLabel(
             card,
             text="Sintomas / Quadro Clínico:",
@@ -222,7 +220,6 @@ class AbaProntuario:
         caixa_sintomas.insert("1.0", paciente["sintomas"])
         caixa_sintomas.configure(state="disabled")
 
-        # Rodape com Status e Comparacoes da AVL
         frame_rodape = ctk.CTkFrame(card, fg_color="transparent")
         frame_rodape.pack(fill="x", padx=20, pady=(5, 15))
 
@@ -235,7 +232,7 @@ class AbaProntuario:
 
         ctk.CTkLabel(
             frame_rodape,
-            text=f"⚡ Busca AVL: {comparacoes} comparações O(log N)",
+            text=f"Busca AVL: {comparacoes} comparações O(log N)",
             font=ctk.CTkFont(size=12, weight="bold"),
             text_color="#80DEEA"
         ).pack(side="right")
@@ -253,7 +250,7 @@ class AbaProntuario:
                 self.comparacoes_ultima_busca = resposta["comparacoes"]
 
                 self.lbl_metricas_avl.configure(
-                    text=f"⚡ AVL: {self.comparacoes_ultima_busca} comparações",
+                    text=f"AVL: {self.comparacoes_ultima_busca} comparações",
                     fg_color="#1B5E20",
                     text_color="#FFFFFF"
                 )
@@ -269,3 +266,101 @@ class AbaProntuario:
                 messagebox.showinfo("Busca AVL", f"Nenhum paciente encontrado com o CPF {formatar_cpf(cpf_limpo)}.")
         except Exception as e:
             messagebox.showerror("Erro de Comunicação", f"Falha ao buscar CPF na AVL:\n{e}")
+
+    def _construir_painel_reclassificacao(self):
+        ctk.CTkLabel(
+            self.col_reclass,
+            text="Reclassificação Clínica",
+            font=ctk.CTkFont(size=18, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(15, 2))
+
+        ctk.CTkLabel(
+            self.col_reclass,
+            text="Selecione o novo nível de risco (atualiza o Max-Heap):",
+            font=ctk.CTkFont(size=12),
+            text_color="#B0BEC5"
+        ).pack(anchor="w", padx=20, pady=(0, 10))
+
+        opcoes = [
+            ("Vermelho", 5),
+            ("Laranja", 4),
+            ("Amarelo", 3),
+            ("Verde", 2),
+            ("Azul", 1)
+        ]
+
+        for cor, prio in opcoes:
+            estilo = CORES_MANCHESTER[cor]
+            btn = ctk.CTkButton(
+                self.col_reclass,
+                text=estilo["rotulo"],
+                font=ctk.CTkFont(size=13, weight="bold"),
+                height=38,
+                fg_color=estilo["fundo"],
+                text_color=estilo["texto"],
+                hover_color=estilo["borda"],
+                anchor="w",
+                command=lambda c=cor, p=prio: self.selecionar_cor_manchester(c, p)
+            )
+            btn.pack(fill="x", padx=20, pady=4)
+
+        self.lbl_selecao_atual = ctk.CTkLabel(
+            self.col_reclass,
+            text="Novo risco selecionado: Vermelho (Prioridade 5)",
+            font=ctk.CTkFont(size=13, weight="bold"),
+            text_color="#EF5350"
+        )
+        self.lbl_selecao_atual.pack(pady=(12, 8))
+
+        self.btn_reclassificar = ctk.CTkButton(
+            self.col_reclass,
+            text="RECLASSIFICAR RISCO NO HEAP",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            height=46,
+            fg_color="#C62828",
+            hover_color="#E53935",
+            command=self.on_reclassificar_risco
+        )
+        self.btn_reclassificar.pack(fill="x", padx=20, pady=(5, 15))
+
+    def selecionar_cor_manchester(self, cor, prioridade):
+        self.cor_selecionada = cor
+        self.prioridade_selecionada = prioridade
+        estilo = CORES_MANCHESTER[cor]
+        self.lbl_selecao_atual.configure(
+            text=f"Novo risco selecionado: {cor} (Prioridade {prioridade})",
+            text_color=estilo["borda"]
+        )
+
+    def on_reclassificar_risco(self):
+        if not self.paciente_consultado:
+            messagebox.showwarning("Aviso", "Busque um paciente pelo CPF antes de reclassificar.")
+            return
+
+        id_pront = self.paciente_consultado["id_prontuario"]
+        cpf_atual = self.paciente_consultado["cpf"]
+
+        try:
+            res = self.backend.reclassificar(
+                id_pront,
+                self.prioridade_selecionada,
+                self.cor_selecionada
+            )
+            if res["sucesso"]:
+                # Consulta novamente na AVL para refletir a memoria compartilhada
+                busca = self.backend.buscar_cpf(cpf_atual)
+                if busca["sucesso"]:
+                    self.paciente_consultado = busca["paciente"]
+                    self._renderizar_ficha_paciente(self.paciente_consultado, busca["comparacoes"])
+
+                if self.callback_atualizar_sistema:
+                    self.callback_atualizar_sistema()
+
+                messagebox.showinfo(
+                    "Reclassificação Concluída",
+                    f"Paciente #{id_pront} atualizado para {self.cor_selecionada} (Prioridade {self.prioridade_selecionada})!"
+                )
+            else:
+                messagebox.showerror("Não Permitido", res.get("mensagem", "Falha ao reclassificar paciente."))
+        except Exception as e:
+            messagebox.showerror("Erro de Comunicação", f"Erro ao reclassificar no backend:\n{e}")
