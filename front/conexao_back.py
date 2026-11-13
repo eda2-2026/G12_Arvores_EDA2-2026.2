@@ -122,10 +122,13 @@ class ConexaoBackend:
         resposta = self._enviar_comando(comando)
         partes = resposta.split(";")
         if partes[0] == "OK":
+            tamanho_heap = int(partes[2]) if len(partes) > 2 else 0
+            mensagem = partes[3] if len(partes) > 3 else (partes[2] if len(partes) > 2 else "Inserido com sucesso")
             return {
                 "sucesso": True,
                 "id_prontuario": int(partes[1]),
-                "mensagem": partes[2]
+                "tamanho_heap": tamanho_heap,
+                "mensagem": mensagem
             }
         return {"sucesso": False, "mensagem": partes[1] if len(partes) > 1 else resposta}
 
