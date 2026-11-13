@@ -3,7 +3,7 @@
 Trabalho prático 3 para a disciplina de Estruturas de Dados 2.
 
 ## Apresentação
-* **Assista ao Vídeo:** [Apresentação](https://youtu.be/JB-06nm0UH4) 
+* **Assista ao Vídeo:** [![Assista à demonstração](https://img.youtube.com/vi/JB-06nm0UH4/maxresdefault.jpg)](https://www.youtube.com/watch?v=JB-06nm0UH4)
 
 ## Equipe
 *   [Gabriel Diniz](https://github.com/GabrielDiniz12) - 241025630
