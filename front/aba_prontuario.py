@@ -29,7 +29,7 @@ class AbaProntuario:
 
         lbl_busca = ctk.CTkLabel(
             self.frame_busca,
-            text="Consultar CPF (Árvore AVL):",
+            text="Buscar por CPF:",
             font=ctk.CTkFont(size=15, weight="bold")
         )
         lbl_busca.grid(row=0, column=0, padx=(20, 10), pady=15, sticky="w")
@@ -58,7 +58,7 @@ class AbaProntuario:
 
         self.lbl_metricas_avl = ctk.CTkLabel(
             self.frame_busca,
-            text="AVL: Aguardando consulta",
+            text="Aguardando busca",
             font=ctk.CTkFont(size=12, weight="bold"),
             fg_color="#263238",
             text_color="#80DEEA",
@@ -130,7 +130,7 @@ class AbaProntuario:
 
         lbl_dica = ctk.CTkLabel(
             frame_vazio,
-            text="Digite um CPF na barra acima (ex: 000.000.001-91) para buscar na Árvore AVL.",
+            text="Digite o CPF do paciente para carregar o prontuário.",
             font=ctk.CTkFont(size=13),
             text_color="#78909C"
         )
@@ -232,7 +232,7 @@ class AbaProntuario:
 
         ctk.CTkLabel(
             frame_rodape,
-            text=f"Busca AVL: {comparacoes} comparações O(log N)",
+            text=f"Passos de busca AVL: {comparacoes}",
             font=ctk.CTkFont(size=12, weight="bold"),
             text_color="#80DEEA"
         ).pack(side="right")
@@ -250,7 +250,7 @@ class AbaProntuario:
                 self.comparacoes_ultima_busca = resposta["comparacoes"]
 
                 self.lbl_metricas_avl.configure(
-                    text=f"AVL: {self.comparacoes_ultima_busca} comparações",
+                    text=f"Comparações AVL: {self.comparacoes_ultima_busca}",
                     fg_color="#1B5E20",
                     text_color="#FFFFFF"
                 )
@@ -258,7 +258,7 @@ class AbaProntuario:
             else:
                 self.paciente_consultado = None
                 self.lbl_metricas_avl.configure(
-                    text="AVL: CPF não encontrado",
+                    text="CPF não encontrado",
                     fg_color="#B71C1C",
                     text_color="#FFFFFF"
                 )
@@ -276,7 +276,7 @@ class AbaProntuario:
 
         ctk.CTkLabel(
             self.col_reclass,
-            text="Selecione o novo nível de risco (atualiza o Max-Heap):",
+            text="Selecione o novo nível de risco do paciente:",
             font=ctk.CTkFont(size=12),
             text_color="#B0BEC5"
         ).pack(anchor="w", padx=20, pady=(0, 10))
@@ -314,7 +314,7 @@ class AbaProntuario:
 
         self.btn_reclassificar = ctk.CTkButton(
             self.col_reclass,
-            text="RECLASSIFICAR RISCO NO HEAP",
+            text="Confirmar Reclassificação",
             font=ctk.CTkFont(size=14, weight="bold"),
             height=46,
             fg_color="#C62828",

@@ -10,6 +10,7 @@ if diretorio_raiz not in sys.path:
 from front.conexao_back import ConexaoBackend
 from front.aba_consultorio import AbaConsultorio
 from front.aba_prontuario import AbaProntuario
+from front.aba_triagem import AbaTriagem
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -19,7 +20,7 @@ class AppTriagem(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Sistema de Triagem Hospitalar SUS / Protocolo de Manchester - EDA2")
+        self.title("Sistema de Atendimento e Triagem Hospitalar")
         self.geometry("1180x740")
         self.minsize(1000, 640)
 
@@ -50,7 +51,7 @@ class AppTriagem(ctk.CTk):
 
         lbl_logo = ctk.CTkLabel(
             frame_titulos,
-            text="UPA Central - Gestão de Emergência SUS",
+            text="UPA Central - Gestão de Atendimento",
             font=ctk.CTkFont(size=20, weight="bold"),
             text_color="#FFFFFF"
         )
@@ -58,7 +59,7 @@ class AppTriagem(ctk.CTk):
 
         lbl_subtitulo = ctk.CTkLabel(
             frame_titulos,
-            text="EDA2 2026.2 | Protocolo de Manchester | Fila de Prioridades (Max-Heap) e Índice CPF (Árvore AVL)",
+            text="Triagem de Risco e Fluxo de Atendimento Hospitalar",
             font=ctk.CTkFont(size=12),
             text_color="#9E9E9E"
         )
@@ -67,16 +68,16 @@ class AppTriagem(ctk.CTk):
         self.frame_metricas = ctk.CTkFrame(self.frame_header, fg_color="transparent")
         self.frame_metricas.grid(row=0, column=1, padx=20, pady=12, sticky="e")
 
-        self.card_total = self._criar_card_metrica(self.frame_metricas, "PACIENTES TOTAIS", "...", "#263238")
+        self.card_total = self._criar_card_metrica(self.frame_metricas, "TOTAL CADASTRADOS", "...", "#263238")
         self.card_total.pack(side="left", padx=5)
 
-        self.card_heap = self._criar_card_metrica(self.frame_metricas, "AGUARDANDO (HEAP)", "...", "#1B5E20")
+        self.card_heap = self._criar_card_metrica(self.frame_metricas, "AGUARDANDO", "...", "#1B5E20")
         self.card_heap.pack(side="left", padx=5)
 
-        self.card_avl = self._criar_card_metrica(self.frame_metricas, "ALTURA AVL (CPF)", "...", "#0D47A1")
+        self.card_avl = self._criar_card_metrica(self.frame_metricas, "ALTURA AVL", "...", "#0D47A1")
         self.card_avl.pack(side="left", padx=5)
 
-        self.card_status = self._criar_card_metrica(self.frame_metricas, "BACKEND", "CONECTADO", "#37474F")
+        self.card_status = self._criar_card_metrica(self.frame_metricas, "SISTEMA", "CONECTADO", "#37474F")
         self.card_status.pack(side="left", padx=5)
 
     def _criar_card_metrica(self, master, titulo, valor_padrao, cor_fundo):
@@ -121,36 +122,16 @@ class AppTriagem(ctk.CTk):
         )
 
         tab_triagem = self.tabview.add("Recepção e Triagem")
-        self._construir_placeholder_aba3(tab_triagem)
+        self.aba_triagem = AbaTriagem(
+            master_tab=tab_triagem,
+            backend=self.backend,
+            callback_atualizar_sistema=self._sincronizar_abas
+        )
 
     def _sincronizar_abas(self):
         self.atualizar_barra_status()
         if hasattr(self, "aba_consultorio"):
             self.aba_consultorio.atualizar_radar()
-
-    def _construir_placeholder_aba3(self, master):
-        frame = ctk.CTkFrame(master, corner_radius=10)
-        frame.pack(fill="both", expand=True, padx=20, pady=20)
-
-        lbl_tit = ctk.CTkLabel(
-            frame,
-            text="Recepção e Nova Triagem de Paciente",
-            font=ctk.CTkFont(size=20, weight="bold")
-        )
-        lbl_tit.pack(pady=(80, 10))
-
-        desc = (
-            "Este módulo permitirá o cadastro de novos pacientes na UPA em tempo real,\n"
-            "inserindo simultaneamente na Árvore AVL de busca e no Max-Heap de prioridades."
-        )
-        lbl_desc = ctk.CTkLabel(
-            frame,
-            text=desc,
-            font=ctk.CTkFont(size=13),
-            text_color="#B0BEC5",
-            justify="center"
-        )
-        lbl_desc.pack(pady=15)
 
     def atualizar_barra_status(self):
         try:
