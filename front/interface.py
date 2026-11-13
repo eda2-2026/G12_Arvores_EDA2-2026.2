@@ -20,7 +20,7 @@ class AppTriagem(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Sistema de Triagem Hospitalar SUS / Protocolo de Manchester - EDA2")
+        self.title("Sistema de Atendimento e Triagem Hospitalar")
         self.geometry("1180x740")
         self.minsize(1000, 640)
 
@@ -51,7 +51,7 @@ class AppTriagem(ctk.CTk):
 
         lbl_logo = ctk.CTkLabel(
             frame_titulos,
-            text="UPA Central - Gestão de Emergência SUS",
+            text="UPA Central - Gestão de Atendimento",
             font=ctk.CTkFont(size=20, weight="bold"),
             text_color="#FFFFFF"
         )
@@ -59,7 +59,7 @@ class AppTriagem(ctk.CTk):
 
         lbl_subtitulo = ctk.CTkLabel(
             frame_titulos,
-            text="EDA2 2026.2 | Protocolo de Manchester | Fila de Prioridades (Max-Heap) e Índice CPF (Árvore AVL)",
+            text="Triagem de Risco e Fluxo de Atendimento Hospitalar",
             font=ctk.CTkFont(size=12),
             text_color="#9E9E9E"
         )
@@ -68,16 +68,16 @@ class AppTriagem(ctk.CTk):
         self.frame_metricas = ctk.CTkFrame(self.frame_header, fg_color="transparent")
         self.frame_metricas.grid(row=0, column=1, padx=20, pady=12, sticky="e")
 
-        self.card_total = self._criar_card_metrica(self.frame_metricas, "PACIENTES TOTAIS", "...", "#263238")
+        self.card_total = self._criar_card_metrica(self.frame_metricas, "TOTAL CADASTRADOS", "...", "#263238")
         self.card_total.pack(side="left", padx=5)
 
-        self.card_heap = self._criar_card_metrica(self.frame_metricas, "AGUARDANDO (HEAP)", "...", "#1B5E20")
+        self.card_heap = self._criar_card_metrica(self.frame_metricas, "AGUARDANDO", "...", "#1B5E20")
         self.card_heap.pack(side="left", padx=5)
 
-        self.card_avl = self._criar_card_metrica(self.frame_metricas, "ALTURA AVL (CPF)", "...", "#0D47A1")
+        self.card_avl = self._criar_card_metrica(self.frame_metricas, "ALTURA AVL", "...", "#0D47A1")
         self.card_avl.pack(side="left", padx=5)
 
-        self.card_status = self._criar_card_metrica(self.frame_metricas, "BACKEND", "CONECTADO", "#37474F")
+        self.card_status = self._criar_card_metrica(self.frame_metricas, "SISTEMA", "CONECTADO", "#37474F")
         self.card_status.pack(side="left", padx=5)
 
     def _criar_card_metrica(self, master, titulo, valor_padrao, cor_fundo):

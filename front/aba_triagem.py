@@ -55,7 +55,7 @@ class AbaTriagem:
 
         lbl_sub_form = ctk.CTkLabel(
             self.col_form,
-            text="Inserção simultânea e balanceada no Max-Heap e na Árvore AVL em tempo O(log N)",
+            text="Preencha os dados clínicos para registrar a entrada do paciente",
             font=ctk.CTkFont(size=12),
             text_color="#9E9E9E"
         )
@@ -131,10 +131,10 @@ class AbaTriagem:
         )
         self.entry_sintomas.grid(row=5, column=0, columnspan=2, padx=15, pady=(0, 12), sticky="ew")
 
-        # 4. Classificação de Risco (Protocolo de Manchester)
+        # 4. Classificação de Risco
         lbl_manchester = ctk.CTkLabel(
             self.container_campos,
-            text="Classificação de Risco de Manchester (Prioridade de Atendimento) *",
+            text="Classificação de Risco *",
             font=ctk.CTkFont(size=13, weight="bold")
         )
         lbl_manchester.grid(row=6, column=0, columnspan=2, padx=15, pady=(4, 6), sticky="w")
@@ -149,7 +149,7 @@ class AbaTriagem:
 
         self.btn_cadastrar = ctk.CTkButton(
             frame_acoes,
-            text="CADASTRAR PACIENTE (ENVIAR À FILA)",
+            text="Cadastrar Paciente",
             font=ctk.CTkFont(size=14, weight="bold"),
             height=46,
             fg_color="#1B5E20",
@@ -160,7 +160,7 @@ class AbaTriagem:
 
         self.btn_limpar = ctk.CTkButton(
             frame_acoes,
-            text="Limpar Campos",
+            text="Limpar",
             font=ctk.CTkFont(size=13, weight="bold"),
             height=46,
             fg_color="#37474F",
@@ -181,7 +181,7 @@ class AbaTriagem:
         # Topo direito: Resumo da última triagem realizada
         lbl_tit_confirmacao = ctk.CTkLabel(
             self.col_direita,
-            text="Confirmação da Última Triagem",
+            text="Último Paciente Cadastrado",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         lbl_tit_confirmacao.grid(row=0, column=0, padx=15, pady=(15, 5), sticky="w")
@@ -195,7 +195,7 @@ class AbaTriagem:
         # Base direita: Histórico da sessão
         self.lbl_tit_historico = ctk.CTkLabel(
             self.col_direita,
-            text="Triagens Desta Sessão (0)",
+            text="Histórico da Sessão (0)",
             font=ctk.CTkFont(size=16, weight="bold")
         )
         self.lbl_tit_historico.grid(row=2, column=0, padx=15, pady=(15, 5), sticky="w")
@@ -283,7 +283,7 @@ class AbaTriagem:
 
         lbl_vazio = ctk.CTkLabel(
             self.container_confirmacao,
-            text="Nenhum paciente cadastrado nesta sessão.\nPreencha o formulário ao lado para realizar uma triagem.",
+            text="Nenhum cadastro realizado nesta sessão.",
             font=ctk.CTkFont(size=12),
             text_color="#78909C",
             justify="center"
@@ -346,7 +346,7 @@ class AbaTriagem:
         frame_status_ed = ctk.CTkFrame(self.container_confirmacao, fg_color="#263238", corner_radius=6)
         frame_status_ed.pack(padx=15, pady=(0, 12), fill="x")
 
-        fila_heap_txt = f"Max-Heap: Posição estimada na fila (~{p.get('tamanho_heap', 'Atualizado')})"
+        fila_heap_txt = f"Posição na fila: ~{p.get('tamanho_heap', 'Atualizado')}"
         lbl_heap = ctk.CTkLabel(
             frame_status_ed,
             text=fila_heap_txt,
@@ -357,7 +357,7 @@ class AbaTriagem:
 
         lbl_avl = ctk.CTkLabel(
             frame_status_ed,
-            text="Árvore AVL: Prontuário indexado por CPF em tempo O(log N)",
+            text="Status: Prontuário indexado no sistema",
             font=ctk.CTkFont(size=11, weight="bold"),
             text_color="#80DEEA"
         )
@@ -499,12 +499,11 @@ class AbaTriagem:
                     self.callback_atualizar_sistema()
 
                 messagebox.showinfo(
-                    "Triagem Concluída com Sucesso",
+                    "Paciente Cadastrado",
                     f"Paciente: {nome_limpo}\n"
                     f"Prontuário Nº: {novo_id}\n"
                     f"Classificação: {self.cor_selecionada} (Prioridade {self.prioridade_selecionada})\n"
-                    f"Posição no Max-Heap: ~{tamanho_heap} na fila\n\n"
-                    "O paciente já está disponível no índice da AVL e pronto para ser chamado no Consultório!"
+                    f"Posição na fila: ~{tamanho_heap}"
                 )
             else:
                 msg_erro = resultado.get("mensagem", "Erro desconhecido retornado pelo backend.")

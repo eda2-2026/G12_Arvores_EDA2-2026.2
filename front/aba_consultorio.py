@@ -46,7 +46,7 @@ class AbaConsultorio:
 
         self.btn_chamar = ctk.CTkButton(
             frame_acoes,
-            text="CHAMAR PRÓXIMO PACIENTE (HEAP)",
+            text="Chamar Próximo Paciente",
             font=ctk.CTkFont(size=15, weight="bold"),
             height=48,
             fg_color="#1B5E20",
@@ -57,7 +57,7 @@ class AbaConsultorio:
 
         self.btn_finalizar = ctk.CTkButton(
             frame_acoes,
-            text="Concluir",
+            text="Concluir Atendimento",
             font=ctk.CTkFont(size=14, weight="bold"),
             height=48,
             fg_color="#37474F",
@@ -78,7 +78,7 @@ class AbaConsultorio:
 
         lbl_titulo_radar = ctk.CTkLabel(
             frame_cabecalho_radar,
-            text="Radar da Fila de Espera",
+            text="Fila de Espera",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         lbl_titulo_radar.grid(row=0, column=0, sticky="w")
@@ -97,7 +97,7 @@ class AbaConsultorio:
 
         lbl_subtitulo_radar = ctk.CTkLabel(
             self.col_direita,
-            text="Top 10 pacientes de maior prioridade no Max-Heap:",
+            text="Próximos pacientes por ordem de prioridade:",
             font=ctk.CTkFont(size=12),
             text_color="#B0BEC5"
         )
@@ -127,7 +127,7 @@ class AbaConsultorio:
 
         lbl_dica = ctk.CTkLabel(
             frame_vazio,
-            text="Clique no botão abaixo para chamar o próximo caso mais grave da fila.",
+            text="Clique no botão abaixo para chamar o próximo paciente da fila.",
             font=ctk.CTkFont(size=13),
             text_color="#78909C"
         )
@@ -152,7 +152,7 @@ class AbaConsultorio:
 
         lbl_badge = ctk.CTkLabel(
             frame_badge,
-            text=f"PROTOCOLO DE MANCHESTER: {estilo['rotulo']}",
+            text=f"CLASSIFICAÇÃO: {estilo['rotulo'].upper()}",
             font=ctk.CTkFont(size=13, weight="bold"),
             text_color=estilo["texto"]
         )
@@ -316,7 +316,7 @@ class AbaConsultorio:
             else:
                 messagebox.showinfo(
                     "Fila Vazia",
-                    "Não há mais pacientes aguardando na fila de emergência (Heap vazio)."
+                    "Não há pacientes aguardando na fila de atendimento."
                 )
         except Exception as e:
             messagebox.showerror("Erro de Comunicação", f"Falha ao chamar paciente:\n{e}")
