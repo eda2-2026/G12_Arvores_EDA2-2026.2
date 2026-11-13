@@ -2,12 +2,8 @@ import customtkinter as ctk
 from tkinter import messagebox
 from front.tema_manchester import obter_estilo_manchester, formatar_cpf, formatar_timestamp
 
-class AbaConsultorio:
-    """
-    Componente visual da Aba 1: Consultorio Medico e Chamada de Pacientes.
-    Consome o Max-Heap em C em tempo real para gerenciar o atendimento da emergencia.
-    """
 
+class AbaConsultorio:
     def __init__(self, master_tab, backend, callback_atualizar_status=None):
         self.master = master_tab
         self.backend = backend
@@ -19,37 +15,30 @@ class AbaConsultorio:
         self.atualizar_radar()
 
     def _construir_layout(self):
-        # Configura grid da aba em 2 colunas proporcionais
         self.master.grid_columnconfigure(0, weight=6, uniform="col")
         self.master.grid_columnconfigure(1, weight=4, uniform="col")
         self.master.grid_rowconfigure(0, weight=1)
 
-        # -------------------------------------------------------------
-        # COLUNA ESQUERDA: Consultorio Medico & Chamada Ativa
-        # -------------------------------------------------------------
+        # Coluna esquerda: Consultorio e chamada ativa
         self.col_esquerda = ctk.CTkFrame(self.master, corner_radius=10)
         self.col_esquerda.grid(row=0, column=0, padx=(10, 5), pady=10, sticky="nsew")
         self.col_esquerda.grid_columnconfigure(0, weight=1)
         self.col_esquerda.grid_rowconfigure(1, weight=1)
 
-        # Titulo da secao
         lbl_titulo_medico = ctk.CTkLabel(
             self.col_esquerda,
-            text="🩺 Consultório de Atendimento Médico",
+            text="Consultório de Atendimento Médico",
             font=ctk.CTkFont(size=20, weight="bold")
         )
         lbl_titulo_medico.grid(row=0, column=0, padx=20, pady=(15, 10), sticky="w")
 
-        # Container do Card Central de Atendimento
         self.container_card = ctk.CTkFrame(self.col_esquerda, corner_radius=8, fg_color="#1E1E1E")
         self.container_card.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.container_card.grid_columnconfigure(0, weight=1)
         self.container_card.grid_rowconfigure(0, weight=1)
 
-        # Renderiza inicialmente o estado de espera
         self._renderizar_card_vazio()
 
-        # Botoes de Acao no rodape da coluna esquerda
         frame_acoes = ctk.CTkFrame(self.col_esquerda, fg_color="transparent")
         frame_acoes.grid(row=2, column=0, padx=20, pady=(10, 20), sticky="ew")
         frame_acoes.grid_columnconfigure(0, weight=3)
@@ -57,7 +46,7 @@ class AbaConsultorio:
 
         self.btn_chamar = ctk.CTkButton(
             frame_acoes,
-            text="📢 CHAMAR PRÓXIMO PACIENTE (HEAP)",
+            text="CHAMAR PRÓXIMO PACIENTE (HEAP)",
             font=ctk.CTkFont(size=15, weight="bold"),
             height=48,
             fg_color="#1B5E20",
@@ -68,7 +57,7 @@ class AbaConsultorio:
 
         self.btn_finalizar = ctk.CTkButton(
             frame_acoes,
-            text="✅ Concluir",
+            text="Concluir",
             font=ctk.CTkFont(size=14, weight="bold"),
             height=48,
             fg_color="#37474F",
@@ -77,29 +66,26 @@ class AbaConsultorio:
         )
         self.btn_finalizar.grid(row=0, column=1, sticky="ew")
 
-        # -------------------------------------------------------------
-        # COLUNA DIREITA: Radar de Espera (Top 10 do Max-Heap)
-        # -------------------------------------------------------------
+        # Coluna direita: Radar de espera (Top 10 do Max-Heap)
         self.col_direita = ctk.CTkFrame(self.master, corner_radius=10)
         self.col_direita.grid(row=0, column=1, padx=(5, 10), pady=10, sticky="nsew")
         self.col_direita.grid_columnconfigure(0, weight=1)
         self.col_direita.grid_rowconfigure(1, weight=1)
 
-        # Cabecalho do Radar com botao de atualizacao manual
         frame_cabecalho_radar = ctk.CTkFrame(self.col_direita, fg_color="transparent")
         frame_cabecalho_radar.grid(row=0, column=0, padx=15, pady=(15, 5), sticky="ew")
         frame_cabecalho_radar.grid_columnconfigure(0, weight=1)
 
         lbl_titulo_radar = ctk.CTkLabel(
             frame_cabecalho_radar,
-            text="⏱️ Radar da Fila de Espera",
+            text="Radar da Fila de Espera",
             font=ctk.CTkFont(size=18, weight="bold")
         )
         lbl_titulo_radar.grid(row=0, column=0, sticky="w")
 
         btn_atualizar_radar = ctk.CTkButton(
             frame_cabecalho_radar,
-            text="🔄 Atualizar",
+            text="Atualizar",
             width=90,
             height=30,
             font=ctk.CTkFont(size=12),
@@ -117,14 +103,10 @@ class AbaConsultorio:
         )
         lbl_subtitulo_radar.grid(row=1, column=0, padx=15, pady=(0, 10), sticky="nw")
 
-        # Scrollable Frame listando os proximos pacientes
         self.scroll_radar = ctk.CTkScrollableFrame(self.col_direita, corner_radius=8, fg_color="#1E1E1E")
         self.scroll_radar.grid(row=1, column=0, padx=15, pady=(28, 15), sticky="nsew")
         self.scroll_radar.grid_columnconfigure(0, weight=1)
 
-    # -------------------------------------------------------------
-    # Renderizacao do Card Central de Atendimento
-    # -------------------------------------------------------------
     def _limpar_container_card(self):
         for widget in self.container_card.winfo_children():
             widget.destroy()
@@ -134,9 +116,6 @@ class AbaConsultorio:
 
         frame_vazio = ctk.CTkFrame(self.container_card, fg_color="transparent")
         frame_vazio.place(relx=0.5, rely=0.5, anchor="center")
-
-        lbl_icone = ctk.CTkLabel(frame_vazio, text="👨‍⚕️", font=ctk.CTkFont(size=54))
-        lbl_icone.pack(pady=(0, 10))
 
         lbl_msg = ctk.CTkLabel(
             frame_vazio,
@@ -148,7 +127,7 @@ class AbaConsultorio:
 
         lbl_dica = ctk.CTkLabel(
             frame_vazio,
-            text="Clique no botão verde abaixo para chamar o próximo caso mais grave da fila.",
+            text="Clique no botão abaixo para chamar o próximo caso mais grave da fila.",
             font=ctk.CTkFont(size=13),
             text_color="#78909C"
         )
@@ -168,7 +147,6 @@ class AbaConsultorio:
         card.pack(fill="both", expand=True, padx=15, pady=15)
         card.grid_columnconfigure(0, weight=1)
 
-        # 1. Badge Luminosa de Manchester
         frame_badge = ctk.CTkFrame(card, fg_color=estilo["fundo"], corner_radius=6, height=36)
         frame_badge.pack(fill="x", padx=15, pady=(15, 10))
 
@@ -180,7 +158,6 @@ class AbaConsultorio:
         )
         lbl_badge.pack(pady=6)
 
-        # 2. Nome e Dados Pessoais
         lbl_nome = ctk.CTkLabel(
             card,
             text=paciente["nome"],
@@ -189,7 +166,6 @@ class AbaConsultorio:
         )
         lbl_nome.pack(anchor="w", padx=20, pady=(5, 5))
 
-        # Grade com dados cadastrais
         frame_info = ctk.CTkFrame(card, fg_color="transparent")
         frame_info.pack(fill="x", padx=20, pady=5)
         frame_info.grid_columnconfigure((0, 1), weight=1)
@@ -226,7 +202,6 @@ class AbaConsultorio:
         )
         lbl_chegada.grid(row=1, column=1, sticky="w", pady=2)
 
-        # 3. Queixa Clinica / Sintomas
         lbl_titulo_sintomas = ctk.CTkLabel(
             card,
             text="Queixa Clínica / Sintomas Relatados:",
@@ -247,18 +222,14 @@ class AbaConsultorio:
         caixa_sintomas.insert("1.0", paciente["sintomas"])
         caixa_sintomas.configure(state="disabled")
 
-        # 4. Status atual
         lbl_status = ctk.CTkLabel(
             card,
-            text=f"Status: 🟡 {paciente['status'].upper()}",
+            text=f"Status: {paciente['status'].upper()}",
             font=ctk.CTkFont(size=13, weight="bold"),
             text_color="#FFD54F"
         )
         lbl_status.pack(anchor="w", padx=20, pady=(0, 15))
 
-    # -------------------------------------------------------------
-    # Renderizacao do Radar da Fila (Max-Heap)
-    # -------------------------------------------------------------
     def atualizar_radar(self):
         for widget in self.scroll_radar.winfo_children():
             widget.destroy()
@@ -296,7 +267,6 @@ class AbaConsultorio:
             card_item.pack(fill="x", padx=5, pady=4)
             card_item.grid_columnconfigure(1, weight=1)
 
-            # Posicao numerica no Heap
             lbl_pos = ctk.CTkLabel(
                 card_item,
                 text=f"{idx}º",
@@ -306,7 +276,6 @@ class AbaConsultorio:
             )
             lbl_pos.grid(row=0, column=0, rowspan=2, padx=(8, 4), pady=5)
 
-            # Nome e Idade
             lbl_nome_item = ctk.CTkLabel(
                 card_item,
                 text=f"{p['nome']} ({p['idade']}a)",
@@ -315,7 +284,6 @@ class AbaConsultorio:
             )
             lbl_nome_item.grid(row=0, column=1, sticky="w", padx=4, pady=(5, 0))
 
-            # Resumo de sintomas
             sintomas_curto = p["sintomas"][:42] + ("..." if len(p["sintomas"]) > 42 else "")
             lbl_sint_item = ctk.CTkLabel(
                 card_item,
@@ -325,7 +293,6 @@ class AbaConsultorio:
             )
             lbl_sint_item.grid(row=1, column=1, sticky="w", padx=4, pady=(0, 5))
 
-            # Tag de Manchester colorida a direita
             badge_item = ctk.CTkLabel(
                 card_item,
                 text=f" {p['classificacao'].upper()} (P{p['prioridade']}) ",
@@ -336,9 +303,6 @@ class AbaConsultorio:
             )
             badge_item.grid(row=0, column=2, rowspan=2, padx=(4, 10), pady=8, sticky="e")
 
-    # -------------------------------------------------------------
-    # Eventos de Acao do Medico
-    # -------------------------------------------------------------
     def on_chamar_proximo(self):
         try:
             resposta = self.backend.chamar_proximo()
